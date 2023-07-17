@@ -21,6 +21,16 @@ export default defineConfig({
       ],
     }),
   ],
+  // 前端和后端都可以处理跨域，这边注释掉前端的是因为后端那写了跨域的配置
+  // server: {
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://localhost:8080',
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/\/api/, '')
+  //     }
+  //   }
+  // },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
@@ -32,8 +42,9 @@ export default defineConfig({
         // 自动导入定制化样式文件进行样式覆盖
         additionalData: `
           @use "@/styles/element/index.scss" as *;
+          @use "@/styles/var.scss" as *;
         `,
       }
     }
-  }
+  },
 })

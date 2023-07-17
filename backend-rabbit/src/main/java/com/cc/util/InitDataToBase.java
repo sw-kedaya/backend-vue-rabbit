@@ -1,4 +1,4 @@
-package com.cc;
+package com.cc.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.json.JSONArray;
@@ -9,45 +9,29 @@ import com.cc.entire.Category;
 import com.cc.entire.Goods;
 import com.cc.service.ICategoryService;
 import com.cc.service.IGoodsService;
-import com.cc.util.InitDataToBase;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.cc.util.InitJson.CATEGORY_JSON;
 
-@SpringBootTest
-class BackendRabbitApplicationTests {
+@Component
+public class InitDataToBase {
 
     @Resource
     private ICategoryService categoryService;
     @Resource
     private IGoodsService goodsService;
 
-    @Test
-    void jsonToList() {
-        // 将json解析成对象
-        JSONObject jsonObject = JSONUtil.parseObj(CATEGORY_JSON);
-        JSONArray result = jsonObject.getJSONArray("result");
-        List<CategoryDTO> list = new ArrayList<>();
-        for (Object o : result) {
-            CategoryDTO categoryDTO = BeanUtil.copyProperties(o, CategoryDTO.class);
-            list.add(categoryDTO);
-        }
-        System.out.println(list.get(0).getGoods());
-    }
-
-    @Test
-    void dataSync() {
+    /**
+     * 数据初始化，将项目提供的json数据反向转化成对象存到数据库
+     */
+    public void dataSync() {
         JSONObject jsonObject = JSONUtil.parseObj(CATEGORY_JSON);
         JSONArray result = jsonObject.getJSONArray("result");
         for (Object o : result) {
             CategoryDTO categoryDTO = BeanUtil.copyProperties(o, CategoryDTO.class);
             Category category = BeanUtil.copyProperties(categoryDTO, Category.class);
-            System.out.println(category);
             // 把1级分类存到数据库
             categoryService.save(category);
             // 把2级分类存到数据库
@@ -57,7 +41,7 @@ class BackendRabbitApplicationTests {
         }
     }
 
-    void next(CategoryDTO parent) {
+    private void next(CategoryDTO parent) {
         if (parent.getChildren() == null) {
             return;
         }
@@ -72,11 +56,12 @@ class BackendRabbitApplicationTests {
         }
     }
 
-    void goods(CategoryDTO parent) {
+    private void goods(CategoryDTO parent) {
         if (parent.getGoods() == null) {
             return;
         }
         for (Goods good : parent.getGoods()) {
+            good.setCategoryId(parent.getId());
             goodsService.save(good);
         }
     }
