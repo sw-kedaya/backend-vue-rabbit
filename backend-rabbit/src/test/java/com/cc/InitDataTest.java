@@ -13,7 +13,22 @@ public class InitDataTest {
     private InitDataToBase initDataToBase;
 
     @Test
-    void init01() {
-        initDataToBase.dataSync();
+    void initCategory() {
+        initDataToBase.dataSyncForCategory();
+    }
+
+    @Test
+    void initBanner() {
+        initDataToBase.dataSyncForBanner();
+    }
+
+    @Test
+    void initGoodsNew() {
+        initDataToBase.dataSyncForGoodsNew();
+    }
+
+    @Test
+    void initHot() {
+        initDataToBase.dataSyncForHot();
     }
 }

@@ -1,5 +1,7 @@
 package com.cc.util;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 public class InitJson {
     public static final String CATEGORY_JSON = "{\"result\": [\n" +
             "        {\n" +
@@ -1145,6 +1147,107 @@ public class InitJson {
             "                    \"orderNum\": null\n" +
             "                }\n" +
             "            ]\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+
+    public static final String BANNER_JSON = "{\"result\": [\n" +
+            "        {\n" +
+            "            \"id\": \"16\",\n" +
+            "            \"imgUrl\": \"http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/dfc11bb0-4af5-4e9b-9458-99f615cc685a.jpg\",\n" +
+            "            \"hrefUrl\": \"/category/1005000\",\n" +
+            "            \"type\": \"1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"18\",\n" +
+            "            \"imgUrl\": \"http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/1ba86bcc-ae71-42a3-bc3e-37b662f7f07e.jpg\",\n" +
+            "            \"hrefUrl\": \"/category/1013001\",\n" +
+            "            \"type\": \"1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"19\",\n" +
+            "            \"imgUrl\": \"http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/6d202d8e-bb47-4f92-9523-f32ab65754f4.jpg\",\n" +
+            "            \"hrefUrl\": \"/category/1013001\",\n" +
+            "            \"type\": \"1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"20\",\n" +
+            "            \"imgUrl\": \"http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/e83efb1b-309c-46f7-98a3-f1fefa694338.jpg\",\n" +
+            "            \"hrefUrl\": \"/category/1005000\",\n" +
+            "            \"type\": \"1\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"17\",\n" +
+            "            \"imgUrl\": \"http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-15/4a79180a-1a5a-4042-8a77-4db0b9c800a8.jpg\",\n" +
+            "            \"hrefUrl\": \"/category/1019000\",\n" +
+            "            \"type\": \"1\"\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+    public static final String GOODS_NEW_JSON = "{\"result\": [\n" +
+            "        {\n" +
+            "            \"id\": \"4008506\",\n" +
+            "            \"name\": \"平步青云财神家居摆件\",\n" +
+            "            \"desc\": \"艺术家瞿广慈作品，手绘上色，礼盒包装\",\n" +
+            "            \"price\": \"646.00\",\n" +
+            "            \"picture\": \"https://yanxuan-item.nosdn.127.net/9d5d0083264344b5d85acde13570d025.jpg\",\n" +
+            "            \"discount\": null,\n" +
+            "            \"orderNum\": 60\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"3996270\",\n" +
+            "            \"name\": \"超能装多功能出行胸包\",\n" +
+            "            \"desc\": \"小身材，大容量，时尚出行\",\n" +
+            "            \"price\": \"49.00\",\n" +
+            "            \"picture\": \"https://yanxuan-item.nosdn.127.net/59b98ddea6422e71de8cec507865984f.png\",\n" +
+            "            \"discount\": null,\n" +
+            "            \"orderNum\": 15\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"4000464\",\n" +
+            "            \"name\": \"趣玩奶酪纯PC拉链拉杆箱（14/20/24/26寸）\",\n" +
+            "            \"desc\": \"萌趣外形，实用功能，开启愉快旅程\",\n" +
+            "            \"price\": \"199.00\",\n" +
+            "            \"picture\": \"https://yanxuan-item.nosdn.127.net/ee5ae3974a18a93f3f4704fe70075e10.png\",\n" +
+            "            \"discount\": null,\n" +
+            "            \"orderNum\": 38\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"3997974\",\n" +
+            "            \"name\": \"入门首选，语音播报电子血压计\",\n" +
+            "            \"desc\": \"全程语音指导，一键测量，监测心率，贴心守护爸妈健康\",\n" +
+            "            \"price\": \"109.00\",\n" +
+            "            \"picture\": \"https://yanxuan-item.nosdn.127.net/8f0c15f981c5cbcb1aa17215a259fa62.png\",\n" +
+            "            \"discount\": null,\n" +
+            "            \"orderNum\": 17\n" +
+            "        }\n" +
+            "    ]\n" +
+            "}";
+
+    public static final String HOT_JSON = "{\"result\": [\n" +
+            "        {\n" +
+            "            \"id\": \"1001\",\n" +
+            "            \"picture\": \"https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/popular_1.jpg\",\n" +
+            "            \"title\": \"特惠推荐\",\n" +
+            "            \"alt\": \"它们最实惠\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"1002\",\n" +
+            "            \"picture\": \"https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/popular_2.jpg\",\n" +
+            "            \"title\": \"爆款推荐\",\n" +
+            "            \"alt\": \"它们最受欢迎\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"1003\",\n" +
+            "            \"picture\": \"https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/popular_3.jpg\",\n" +
+            "            \"title\": \"一站买全\",\n" +
+            "            \"alt\": \"使用场景下精心优选\"\n" +
+            "        },\n" +
+            "        {\n" +
+            "            \"id\": \"1004\",\n" +
+            "            \"picture\": \"https://yjy-oss-files.oss-cn-zhangjiakou.aliyuncs.com/tuxian/popular_4.jpg\",\n" +
+            "            \"title\": \"领券中心\",\n" +
+            "            \"alt\": \"更多超值优惠券\"\n" +
             "        }\n" +
             "    ]\n" +
             "}";
