@@ -6,4 +6,6 @@ import com.cc.entire.Category;
 
 public interface ICategoryService extends IService<Category> {
     Result head();
+
+    Result withGoods();
 }

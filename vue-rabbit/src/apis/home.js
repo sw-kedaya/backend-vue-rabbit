@@ -20,3 +20,10 @@ export function findHotAPI() {
       url: '/hot/list'
     })
 }
+
+export const getGoodsAPI = () =>{
+    return instance({
+        method: "get",
+        url: '/category/withGoods'
+    })
+}

@@ -16,7 +16,12 @@ public class CategoryController {
     private ICategoryService categoryService;
 
     @GetMapping("head")
-    public Result head(){
+    public Result head() {
         return categoryService.head();
+    }
+
+    @GetMapping("withGoods")
+    public Result withGoods() {
+        return categoryService.withGoods();
     }
 }

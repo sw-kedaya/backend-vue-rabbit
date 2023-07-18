@@ -16,7 +16,7 @@ public class CategoryDTO {
     private String parentName;
     private String categories;
     private String brands;
-    private String saleProperties;
+    private String saleInfo;
     private List<CategoryDTO> children = new ArrayList<>();
     private List<Goods> goods = new ArrayList<>();
 }

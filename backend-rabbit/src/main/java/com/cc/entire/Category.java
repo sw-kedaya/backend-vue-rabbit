@@ -14,5 +14,5 @@ public class Category {
     private String parentName;
     private String categories;
     private String brands;
-    private String saleProperties;
+    private String saleInfo;
 }

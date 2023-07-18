@@ -50,4 +50,32 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
         return Result.ok(listDTO);
     }
+
+    @Override
+    public Result withGoods() {
+        List<CategoryDTO> listDTO = new ArrayList<>();
+
+        // 获取category所有数据
+        List<Category> list = list();
+        // 获取goods所有数据
+        List<Goods> gooodsList = goodsService.list();
+        for (Category category : list) {
+            CategoryDTO categoryDTO = BeanUtil.copyProperties(category, CategoryDTO.class);
+            int count = 0;
+            for (Goods goods : gooodsList) {
+                if (Objects.equals(categoryDTO.getId(), goods.getCategoryId())){
+                    // 只要8个商品
+                    if (count < 8){
+                        count++;
+                        categoryDTO.getGoods().add(goods);
+                    }
+                }
+            }
+            if (categoryDTO.getParentId() == null){
+                listDTO.add(categoryDTO);
+            }
+        }
+
+        return Result.ok(listDTO);
+    }
 }
