@@ -9,7 +9,7 @@ import {useCategoryStore} from "@/stores/category";
 import {onMounted} from "vue";
 
 const categoryStore = useCategoryStore()
-onMounted(()=>{
+onMounted(() => {
   categoryStore.getCategory()
 })
 
@@ -17,8 +17,10 @@ onMounted(()=>{
 
 <template>
   <LayoutFixed/>
-  <LayoutNav />
-  <LayoutHeader />
-  <RouterView />
-  <LayoutFooter />
+  <LayoutNav/>
+  <LayoutHeader/>
+  <!--  方式一：给router-view加key  -->
+  <!--  <RouterView :key="$route.fullPath"/>-->
+  <RouterView/>
+  <LayoutFooter/>
 </template>

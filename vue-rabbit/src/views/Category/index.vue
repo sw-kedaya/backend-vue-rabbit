@@ -1,9 +1,21 @@
 <script setup>
 import {getCategoryByIDAPI} from "@/apis/category";
 import {ref, onMounted} from "vue";
-import {useRoute} from "vue-router";
+import {onBeforeRouteUpdate, useRoute} from "vue-router";
 import {getBannerConditionAPI} from '@/apis/home'
 import GoodsItem from "@/views/Home/components/GoodsItem.vue";
+
+// 分类数据
+const categoryData = ref([])
+const getCategoryById = async (id = useRoute().params.id ) => {
+  const res = await getCategoryByIDAPI(id)
+  categoryData.value = res.data
+}
+onMounted(() => getCategoryById())
+// 路由一变化，再调用一次分类接口，to参数里面有id
+onBeforeRouteUpdate((to)=>{
+  getCategoryById(to.params.id)
+})
 
 // 轮播图数据
 const bannerList = ref([])
@@ -16,15 +28,6 @@ const getBanner = async () => {
 onMounted(() => {
   getBanner()
 })
-
-// 分类数据
-const categoryData = ref([])
-const getCategoryById = async () => {
-  const res = await getCategoryByIDAPI(useRoute().params.id)
-  categoryData.value = res.data
-}
-onMounted(() => getCategoryById())
-
 
 </script>
 
