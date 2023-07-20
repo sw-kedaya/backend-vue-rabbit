@@ -2,9 +2,7 @@ package com.cc.controller;
 
 import com.cc.dto.Result;
 import com.cc.service.ICategoryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -23,5 +21,10 @@ public class CategoryController {
     @GetMapping("withGoods")
     public Result withGoods() {
         return categoryService.withGoods();
+    }
+
+    @GetMapping
+    public Result findById(@RequestParam Long id){
+        return categoryService.findById(id);
     }
 }

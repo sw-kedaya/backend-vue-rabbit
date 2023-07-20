@@ -7,6 +7,7 @@ import lombok.Data;
 public class Goods {
     private Long id;
     private Long categoryId;
+    private Long categoryPid;
     private String name;
     @TableField(value = "`desc`")
     private String desc;
