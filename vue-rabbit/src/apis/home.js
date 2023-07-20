@@ -16,14 +16,25 @@ export function findNewAPI() {
 
 export function findHotAPI() {
     return instance({
-      method: "get",
-      url: '/hot/list'
+        method: "get",
+        url: '/hot/list'
     })
 }
 
-export const getGoodsAPI = () =>{
+export const getGoodsAPI = () => {
     return instance({
         method: "get",
         url: '/category/withGoods'
+    })
+}
+
+export function getBannerConditionAPI(params = {}) {
+    const {distributionSite = '1'} = params
+    return instance({
+        method: "get",
+        url: '/banner/list',
+        params: {
+            distributionSite
+        }
     })
 }

@@ -2,14 +2,27 @@
 import {getCategoryByIDAPI} from "@/apis/category";
 import {ref, onMounted} from "vue";
 import {useRoute} from "vue-router";
+import {getBannerConditionAPI} from '@/apis/home'
+import GoodsItem from "@/views/Home/components/GoodsItem.vue";
 
+// 轮播图数据
+const bannerList = ref([])
+const getBanner = async () => {
+  const res = await getBannerConditionAPI({
+    distributionSite: '2'
+  })
+  bannerList.value = res.data
+}
+onMounted(() => {
+  getBanner()
+})
+
+// 分类数据
 const categoryData = ref([])
-
 const getCategoryById = async () => {
   const res = await getCategoryByIDAPI(useRoute().params.id)
   categoryData.value = res.data
 }
-
 onMounted(() => getCategoryById())
 
 
@@ -25,10 +38,37 @@ onMounted(() => getCategoryById())
           <el-breadcrumb-item>{{ categoryData.name }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
+      <!--轮播图-->
+      <div class="home-banner">
+        <el-carousel height="500px">
+          <el-carousel-item v-for="item in bannerList" :key="item.id">
+            <img :src="item.imgUrl" alt="">
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+      <!-- 分类数据 -->
+      <div class="sub-list">
+        <h3>全部分类</h3>
+        <ul>
+          <li v-for="i in categoryData.children" :key="i.id">
+            <RouterLink to="/">
+              <img :src="i.picture" />
+              <p>{{ i.name }}</p>
+            </RouterLink>
+          </li>
+        </ul>
+      </div>
+      <div class="ref-goods" v-for="item in categoryData.children" :key="item.id">
+        <div class="head">
+          <h3>- {{ item.name }}-</h3>
+        </div>
+        <div class="body">
+          <GoodsItem v-for="good in item.goods" :goods="good" :key="good.id" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
-
 
 <style scoped lang="scss">
 .top-category {
@@ -106,6 +146,17 @@ onMounted(() => getCategoryById())
 
   .bread-container {
     padding: 25px 0;
+  }
+}
+
+.home-banner {
+  width: 1240px;
+  height: 500px;
+  margin: 0 auto;
+
+  img {
+    width: 100%;
+    height: 500px;
   }
 }
 </style>
