@@ -1,33 +1,10 @@
 <script setup>
-import {getCategoryByIDAPI} from "@/apis/category";
-import {ref, onMounted} from "vue";
-import {onBeforeRouteUpdate, useRoute} from "vue-router";
-import {getBannerConditionAPI} from '@/apis/home'
 import GoodsItem from "@/views/Home/components/GoodsItem.vue";
+import {useCategory} from "./composables/useCategory";
+import {useBanner} from "./composables/useBanner";
 
-// 分类数据
-const categoryData = ref([])
-const getCategoryById = async (id = useRoute().params.id ) => {
-  const res = await getCategoryByIDAPI(id)
-  categoryData.value = res.data
-}
-onMounted(() => getCategoryById())
-// 路由一变化，再调用一次分类接口，to参数里面有id
-onBeforeRouteUpdate((to)=>{
-  getCategoryById(to.params.id)
-})
-
-// 轮播图数据
-const bannerList = ref([])
-const getBanner = async () => {
-  const res = await getBannerConditionAPI({
-    distributionSite: '2'
-  })
-  bannerList.value = res.data
-}
-onMounted(() => {
-  getBanner()
-})
+const { categoryData } = useCategory()
+const { bannerList } = useBanner()
 
 </script>
 
@@ -54,7 +31,7 @@ onMounted(() => {
         <h3>全部分类</h3>
         <ul>
           <li v-for="i in categoryData.children" :key="i.id">
-            <RouterLink to="/">
+            <RouterLink :to="`/category/sub/${i.id}`">
               <img :src="i.picture" />
               <p>{{ i.name }}</p>
             </RouterLink>

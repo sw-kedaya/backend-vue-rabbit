@@ -13,6 +13,5 @@ public class Category {
     private Long parentId;
     private String parentName;
     private String categories;
-    private String brands;
     private String saleInfo;
 }
