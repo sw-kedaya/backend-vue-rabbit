@@ -3,6 +3,7 @@ import {useCategorySub} from "@/views/SubCategory/composables/useCategorySub";
 import GoodsItem from "@/views/Home/components/GoodsItem.vue";
 import {useRoute} from "vue-router";
 import {ref} from 'vue';
+import {getCategorySubFilterAPI} from "@/apis/category";
 
 const data = ref({
   id: useRoute().params.id,
@@ -12,9 +13,21 @@ const data = ref({
 })
 
 const {categoryData,getCategorySubFilter} = useCategorySub(data.value)
-
 const tabChange = () =>{
+  data.value.page = 1
+  disabled.value = false
   getCategorySubFilter()
+}
+
+// 无限滚动的方法
+const disabled = ref(false)
+const load =async ()=>{
+  data.value.page++
+  const res = await getCategorySubFilterAPI(data.value)
+  categoryData.value.goods =  [...categoryData.value.goods, ...res.data.goods]
+  if (res.data.goods.length === 0){
+    disabled.value = true
+  }
 }
 
 </script>
@@ -36,7 +49,7 @@ const tabChange = () =>{
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
-      <div class="body">
+      <div class="body" v-infinite-scroll="load" :infinite-scroll-disabled="disabled">
         <!-- 商品列表-->
         <GoodsItem v-for="goods in categoryData.goods" :goods="goods" :key="goods.id"/>
       </div>
