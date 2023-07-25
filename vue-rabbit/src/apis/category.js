@@ -10,12 +10,10 @@ export function getCategoryByIDAPI(id){
     })
 }
 
-export function getCategorySubFilterAPI(id){
+export function getCategorySubFilterAPI(data){
     return instance({
-        method: "get",
+        method: "post",
         url: '/category/sub/filter',
-        params: {
-            id
-        }
+        data
     })
 }

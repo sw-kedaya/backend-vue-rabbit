@@ -2,6 +2,7 @@ package com.cc.controller;
 
 import com.cc.dto.Result;
 import com.cc.service.ICategoryService;
+import com.cc.vo.RequestForSubCategory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,8 +29,8 @@ public class CategoryController {
         return categoryService.findById(id);
     }
         //sub/filter?id=1005999003
-    @GetMapping("sub/filter")
-    public Result getSubFilterById(@RequestParam Long id){
-        return categoryService.getSubFilterById(id);
+    @PostMapping("sub/filter")
+    public Result getSubFilterById(@RequestBody RequestForSubCategory request){
+        return categoryService.getSubFilterById(request);
     }
 }

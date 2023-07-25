@@ -3,6 +3,7 @@ package com.cc.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cc.dto.CategoryDTO;
 import com.cc.dto.Result;
@@ -13,6 +14,7 @@ import com.cc.entire.Goods;
 import com.cc.entire.SaleProperty;
 import com.cc.mapper.CategoryMapper;
 import com.cc.service.*;
+import com.cc.vo.RequestForSubCategory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -118,13 +120,25 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     @Override
-    public Result getSubFilterById(Long id) {
+    public Result getSubFilterById(RequestForSubCategory request) {
         // 1.根据id取出分类数据，并封装到DTO
-        CategoryDTO categoryDTO = BeanUtil.copyProperties(getById(id), CategoryDTO.class);
+        CategoryDTO categoryDTO = BeanUtil.copyProperties(getById(request.getId()), CategoryDTO.class);
 
         // 2.根据分类id获取并封装商品数据-goods
-        List<Goods> goodsList = goodsService.list(new LambdaQueryWrapper<Goods>()
-                .eq(Goods::getCategoryId, categoryDTO.getId()));
+        // 2.1 分类筛选和分页查询
+        Page<Goods> pageInfo = new Page<>(request.getPage(),request.getPageSize());
+        LambdaQueryWrapper<Goods> queryWrapper = new LambdaQueryWrapper<Goods>()
+                .eq(Goods::getCategoryId, categoryDTO.getId());
+        // "最新商品" sortField="publishTime"
+        // "最高人气" sortField="orderNum"
+        // "评论最多" sortField="evaluateNum"
+        // 以下由于字段缺少原因，排序是乱来的
+        if ("publishTime".equals(request.getSortField())){
+            queryWrapper.orderByDesc(Goods::getId);
+        }else if ("orderNum".equals(request.getSortField())){
+            queryWrapper.orderByDesc(Goods::getOrderNum);
+        }
+        List<Goods> goodsList = goodsService.page(pageInfo, queryWrapper).getRecords();
         categoryDTO.getGoods().addAll(goodsList);
 
         // 3.根据该分类数据的父id，查询出其他子分类并封装-categories

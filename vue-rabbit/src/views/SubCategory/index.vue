@@ -1,7 +1,22 @@
 <script setup>
 import {useCategorySub} from "@/views/SubCategory/composables/useCategorySub";
+import GoodsItem from "@/views/Home/components/GoodsItem.vue";
+import {useRoute} from "vue-router";
+import {ref} from 'vue';
 
-const {categoryData} = useCategorySub()
+const data = ref({
+  id: useRoute().params.id,
+  page: 1,
+  pageSize: 20,
+  sortField: "default"
+})
+
+const {categoryData,getCategorySubFilter} = useCategorySub(data.value)
+
+const tabChange = () =>{
+  getCategorySubFilter()
+}
+
 </script>
 
 <template>
@@ -16,13 +31,14 @@ const {categoryData} = useCategorySub()
       </el-breadcrumb>
     </div>
     <div class="sub-container">
-      <el-tabs>
+      <el-tabs v-model="data.sortField" @tab-change="tabChange">
         <el-tab-pane label="最新商品" name="publishTime"></el-tab-pane>
         <el-tab-pane label="最高人气" name="orderNum"></el-tab-pane>
         <el-tab-pane label="评论最多" name="evaluateNum"></el-tab-pane>
       </el-tabs>
       <div class="body">
         <!-- 商品列表-->
+        <GoodsItem v-for="goods in categoryData.goods" :goods="goods" :key="goods.id"/>
       </div>
     </div>
   </div>
