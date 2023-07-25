@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cc.dto.CategoryDTO;
 import com.cc.dto.Result;
+import com.cc.dto.SalePropertyDTO;
+import com.cc.entire.Brand;
 import com.cc.entire.Category;
 import com.cc.entire.Goods;
+import com.cc.entire.SaleProperty;
 import com.cc.mapper.CategoryMapper;
-import com.cc.service.ICategoryService;
-import com.cc.service.IGoodsService;
+import com.cc.service.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
     @Resource
     private IGoodsService goodsService;
+    @Resource
+    private IBrandService brandService;
+    @Resource
+    private ISalePropertyService salePropertyService;
 
     @Override
     public Result head() {
@@ -109,5 +115,43 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         }
 
         return Result.ok(result);
+    }
+
+    @Override
+    public Result getSubFilterById(Long id) {
+        // 1.根据id取出分类数据，并封装到DTO
+        CategoryDTO categoryDTO = BeanUtil.copyProperties(getById(id), CategoryDTO.class);
+
+        // 2.根据分类id获取并封装商品数据-goods
+        List<Goods> goodsList = goodsService.list(new LambdaQueryWrapper<Goods>()
+                .eq(Goods::getCategoryId, categoryDTO.getId()));
+        categoryDTO.getGoods().addAll(goodsList);
+
+        // 3.根据该分类数据的父id，查询出其他子分类并封装-categories
+        List<Category> categories = list(new LambdaQueryWrapper<Category>()
+                .select(Category::getId, Category::getName, Category::getLayer)
+                .eq(Category::getParentId, categoryDTO.getParentId()));
+        categoryDTO.getCategories().addAll(categories);
+
+        // 4.根据该分类数据的brandId获取品牌数据-brands
+        List<Brand> brandList = brandService.list(new LambdaQueryWrapper<Brand>()
+                .eq(Brand::getId, categoryDTO.getBrandId()));
+        categoryDTO.getBrands().addAll(brandList);
+
+        // 5.根据分类id获取saleProperties数据并封装
+        // 5.1首先获取父级property
+        List<SaleProperty> parentSaleProperties = salePropertyService.list(new LambdaQueryWrapper<SaleProperty>()
+                .isNull(SaleProperty::getParentId)
+                .eq(SaleProperty::getCategoryId, categoryDTO.getId()));
+        // 5.2然后根据父id取出其他子数据并封装
+        for (SaleProperty parentSaleProperty : parentSaleProperties) {
+            SalePropertyDTO salePropertyDTO = BeanUtil.copyProperties(parentSaleProperty, SalePropertyDTO.class);
+            List<SaleProperty> saleProperties = salePropertyService.list(new LambdaQueryWrapper<SaleProperty>()
+                    .eq(SaleProperty::getParentId, salePropertyDTO.getId()));
+            salePropertyDTO.getProperties().addAll(saleProperties);
+            categoryDTO.getSaleProperties().add(salePropertyDTO);
+        }
+
+        return Result.ok(categoryDTO);
     }
 }

@@ -12,6 +12,7 @@ public class Category {
     private String picture;
     private Long parentId;
     private String parentName;
-    private String categories;
     private String saleInfo;
+    private Long layer;
+    private Long brandId;
 }

@@ -27,4 +27,9 @@ public class CategoryController {
     public Result findById(@RequestParam Long id){
         return categoryService.findById(id);
     }
+        //sub/filter?id=1005999003
+    @GetMapping("sub/filter")
+    public Result getSubFilterById(@RequestParam Long id){
+        return categoryService.getSubFilterById(id);
+    }
 }

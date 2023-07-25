@@ -15,4 +15,5 @@ public class Goods {
     private String picture;
     private String discount;
     private String orderNum;
+    private Long brandId;
 }

@@ -5,15 +5,10 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.cc.dto.CategoryDTO;
-import com.cc.entire.Category;
-import com.cc.entire.Goods;
-import com.cc.entire.HotRecommend;
-import com.cc.service.IBannerService;
-import com.cc.service.ICategoryService;
-import com.cc.service.IGoodsService;
-import com.cc.service.IHotRecommendService;
+import com.cc.dto.SalePropertyDTO;
+import com.cc.entire.*;
+import com.cc.service.*;
 import org.springframework.stereotype.Component;
-import com.cc.entire.Banner;
 
 import javax.annotation.Resource;
 
@@ -22,6 +17,9 @@ import java.util.stream.Collectors;
 
 import static com.cc.util.InitJson.*;
 
+/**
+ * 数据初始化，将项目提供的json数据反向转化成对象存到数据库
+ */
 @Component
 public class InitDataToBase {
 
@@ -33,10 +31,11 @@ public class InitDataToBase {
     private IBannerService bannerService;
     @Resource
     private IHotRecommendService hotRecommendService;
+    @Resource
+    private IBrandService brandService;
+    @Resource
+    private ISalePropertyService salePropertyService;
 
-    /**
-     * 数据初始化，将项目提供的json数据反向转化成对象存到数据库
-     */
     public void dataSyncForCategory() {
         JSONObject jsonObject = JSONUtil.parseObj(CATEGORY_JSON);
         JSONArray result = jsonObject.getJSONArray("result");
@@ -136,6 +135,59 @@ public class InitDataToBase {
                         }
                     }).collect(Collectors.toList());
             goodsService.saveOrUpdateBatch(goods);
+        }
+    }
+
+    public void dataSyncForBrandAndSaleProperty(Long id){
+        // 获取json数据
+        InitJsonByURL initJsonByURL = new InitJsonByURL();
+        String json = initJsonByURL.getBrandAndSalePropertyJson(id);
+        if (json == null){
+            return;
+        }
+        JSONObject result = JSONUtil.parseObj(json).getJSONObject("result");
+        CategoryDTO categoryDTO = JSONUtil.toBean(result, CategoryDTO.class);
+
+        // 新增category的brandId参数
+        Category category = BeanUtil.copyProperties(categoryDTO, Category.class);
+        if (categoryDTO.getBrands().size() != 0){
+            category.setBrandId(categoryDTO.getBrands().get(0).getId());
+            categoryService.saveOrUpdate(category);
+        }
+
+        // 新增good数据
+        for (Goods good : categoryDTO.getGoods()) {
+            good.setCategoryId(categoryDTO.getId());
+            good.setCategoryPid(categoryDTO.getParentId());
+            if (categoryDTO.getBrands().size() != 0){
+                good.setBrandId(categoryDTO.getBrands().get(0).getId());
+            }
+            goodsService.saveOrUpdate(good);
+        }
+
+        // 新增category的layer参数
+        for (Category c : categoryDTO.getCategories()) {
+            categoryService.saveOrUpdate(c);
+        }
+
+        // 保存brand数据
+        for (Brand brand : categoryDTO.getBrands()) {
+            brandService.saveOrUpdate(brand);
+        }
+
+        // 保存property数据
+        for (SalePropertyDTO salePropertyDTO : categoryDTO.getSaleProperties()) {
+            // 保存父数据
+            SaleProperty spParent = BeanUtil.copyProperties(salePropertyDTO, SaleProperty.class);
+            spParent.setCategoryId(categoryDTO.getId());
+            salePropertyService.saveOrUpdate(spParent);
+            // 保存子数据
+            List<SaleProperty> properties = salePropertyDTO.getProperties();
+            for (SaleProperty property : properties) {
+                property.setParentId(spParent.getId());
+                property.setCategoryId(categoryDTO.getId());
+                salePropertyService.saveOrUpdate(property);
+            }
         }
     }
 }

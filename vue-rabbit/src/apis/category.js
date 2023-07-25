@@ -9,3 +9,13 @@ export function getCategoryByIDAPI(id){
         }
     })
 }
+
+export function getCategorySubFilterAPI(id){
+    return instance({
+        method: "get",
+        url: '/category/sub/filter',
+        params: {
+            id
+        }
+    })
+}

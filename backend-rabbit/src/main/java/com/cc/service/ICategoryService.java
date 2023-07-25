@@ -10,4 +10,6 @@ public interface ICategoryService extends IService<Category> {
     Result withGoods();
 
     Result findById(Long id);
+
+    Result getSubFilterById(Long id);
 }
